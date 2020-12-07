@@ -59,8 +59,32 @@ public class CalcTest {
 		
 		try {
 			assertEquals(20.5, testCalc.getOrderPrice(orders, u, t), 0.0);
-		} catch(TakeAwayBillException e){
+		}
+		catch(TakeAwayBillException e){
 			e.getException();
 		}
 	}
+	 // Test 3: controllo se viene applicato uno sconto del 10% su un totale maggiore di 50€
+	 
+        @Test
+		public void Discount10perc_for_Major50Euro_test(){
+        	
+			Calc testCalculator = new Calc();
+			List<MenuItem> orders = new ArrayList<MenuItem>();
+			User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
+			LocalTime t = LocalTime.of(16, 00);
+			
+				orders.add(new MenuItem(MenuItem.items.Gelato, "Vaniglia", 5));
+				orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 10));
+				orders.add(new MenuItem(MenuItem.items.Budino, "Pinguino", 10));
+				orders.add(new MenuItem(MenuItem.items.Budino, "Biancaneve", 30));		
+			    orders.add(new MenuItem(MenuItem.items.Budino, "Cioccolato", 20));
+			
+			try {
+				assertEquals(67.5, testCalculator.getOrderPrice(orders, u, t), 0.0);
+			} 
+			catch(TakeAwayBillException e) {
+				e.getException();
+			}
+		}
 }

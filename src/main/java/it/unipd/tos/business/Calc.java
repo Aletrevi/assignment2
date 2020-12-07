@@ -12,7 +12,7 @@ import it.unipd.tos.model.User;
 public class Calc implements TakeAwayBill{
 
 
-	public double getOrderPrice(List<MenuItem> itemsOrdered, User user, LocalTime time) throws TakeAwayBillException{
+public double getOrderPrice(List<MenuItem> itemsOrdered, User user, LocalTime time) throws TakeAwayBillException{
 
 
         double total = 0.0;
@@ -31,6 +31,16 @@ public class Calc implements TakeAwayBill{
 
         if(numGelati > 5)
         {total -= lessExpensive * 0.5;}
+        
+        double fiftycheck=0;
+        for (int i=0;i<itemsOrdered.size();i++)
+        {if (itemsOrdered.get(i).getItemName()!=MenuItem.items.Bevanda) {
+             fiftycheck+=itemsOrdered.get(i).getPrice();
+             }
+        }
+        if(fiftycheck > 50) { 
+        total *= 0.9;
+        }
         
         return total;
    }

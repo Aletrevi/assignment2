@@ -140,4 +140,120 @@ public class CalcTest {
     			e.getException();
     		}
     	}
+    	//TEST ISSUE 6: controllo che un utente selezionabile per lo sconto che viene scelto riceva effettivamente lo sconto
+      	@Test
+    	public void getOrderPriceRandomFreeSelected_test() {
+    		
+    		Calc testCalc = new Calc();
+    		User u = new User("AleTrevi","Alessio", "Trevisan", 17);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(18, 30);
+
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Cioccolato", 4));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 4));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Cacao", 4));		
+    	
+    		try {
+    			testCalc.ra.setROptionalValue(true); 
+    			double total = testCalc.getOrderPrice(orders, u, t);
+    			assertEquals(0.0, total, 0.0);
+    		} 
+    		catch(TakeAwayBillException e) {
+    			e.getException();
+    		}
+    	}
+      	//controllo che un utente maggiorenne non possa ricevere lo sconto nemmeno se viene randomicamente scelto (utilizzo il caso limite 18 anni)
+     	@Test
+    	public void getOrderPriceRandomFreeTooOld_test() {
+    		
+    		Calc testCalc = new Calc();
+    		User u = new User("AleTrevi","Alessio", "Trevisan", 18);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(18, 30);
+
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Cioccolato", 4));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 4));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Cacao", 4));	
+    			
+    		try {
+    			testCalc.ra.setROptionalValue(true); 
+    			double total = testCalc.getOrderPrice(orders, u, t);
+    			assertEquals(12, total, 0.0);
+    		} 
+    		catch(TakeAwayBillException e) {
+    			e.getException();
+    		}
+    	}
+     	/*controllo che un utente selezionabile per l'età non riceva lo sconto nemmeno se viene selezionato poichè effettua
+     	   l'ordine prima delle 18:01 (uso il caso limite delle 18, dal testo non si capisce se gli estremi vadano inclusi pertanto li escludo)
+     	 */ 
+     	@Test
+     	 public void getOrderPriceRandomFreeTooEarly_test() {
+    		
+    		Calc testCalc = new Calc();
+    		User u = new User("AleTrevi","Alessio", "Trevisan", 17);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(18, 0);
+	
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Cioccolato", 4));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 4));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Cacao", 4));		
+    		
+    		try {
+    			testCalc.ra.setROptionalValue(true); 
+    			double total = testCalc.getOrderPrice(orders, u, t);
+    			assertEquals(12, total, 0.0);
+    		} 
+    		catch(TakeAwayBillException e) {
+    			e.getException();
+    		}
+    	}
+    	/*controllo che un utente selezionabile per l'età non riceva lo sconto nemmeno se viene selezionato poichè effettua
+  	    l'ordine dopo le 18:59 (uso il caso limite delle 19, dal testo non si capisce se gli estremi vadano inclusi pertanto li escludo)
+  	    */ 
+      	@Test
+    	public void getOrderPriceRandomFreeTooLate_test() {
+    		
+    		Calc testCalc = new Calc();
+    		User u = new User("AleTrevi","Alessio", "Trevisan", 17);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(19, 0);
+
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Cioccolato", 4));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 4));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Cacao", 4));		
+    			
+    		try {
+    			testCalc.ra.setROptionalValue(true); 
+    			double total = testCalc.getOrderPrice(orders, u, t);
+    			assertEquals(12, total, 0.0);
+    		} 
+    		catch(TakeAwayBillException e) {
+    			e.getException();
+    		}
+    	}
+        //controllo che un utente selezionabile per orario ed età non riceva lo sconto se non viene selezionato randomicamente
+      	@Test
+    	public void getOrderPriceRandomFreeNotSelected_test() {
+    		
+    		Calc testCalc = new Calc();
+    		User u = new User("AleTrevi","Alessio", "Trevisan", 17);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(18, 30);
+
+    	
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Cioccolato", 4));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 4));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Cacao", 4));		
+    		
+    		
+    		try {
+    			testCalc.ra.setROptionalValue(false);
+    			double total = testCalc.getOrderPrice(orders, u, t);
+    			assertEquals(12, total, 0.0);
+    		} catch(TakeAwayBillException e) {
+    			e.getException();
+    		}
+    	}
 }
+

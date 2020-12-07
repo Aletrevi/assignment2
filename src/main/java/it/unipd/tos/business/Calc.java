@@ -9,8 +9,11 @@ import java.time.LocalTime;
 import it.unipd.tos.business.exception.TakeAwayBillException;
 import it.unipd.tos.model.MenuItem;
 import it.unipd.tos.model.User;
+import it.unipd.tos.business.RandomFree;
 public class Calc implements TakeAwayBill{
 
+private boolean selected;
+public RandomFree ra=new RandomFree();
 
 public double getOrderPrice(List<MenuItem> itemsOrdered, User user, LocalTime time) throws TakeAwayBillException{
 
@@ -49,6 +52,11 @@ public double getOrderPrice(List<MenuItem> itemsOrdered, User user, LocalTime ti
         if(total < 10)
           {total += 0.50;}
         
+        selected=ra.checkGift(user, time);
+        
+        if (selected) {
+            return 0;
+        }
         return total;
    }
 };

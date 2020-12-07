@@ -45,6 +45,10 @@ public double getOrderPrice(List<MenuItem> itemsOrdered, User user, LocalTime ti
         if(itemsOrdered.size() > 30)
         {throw new TakeAwayBillException("Error: Non è possibile ordinare più di 30 elementi nello stesso ordine");}
         
+        
+        if(total < 10)
+          {total += 0.50;}
+        
         return total;
    }
 };

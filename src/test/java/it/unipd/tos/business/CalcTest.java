@@ -87,7 +87,8 @@ public class CalcTest {
 				e.getException();
 			}
 		}
-        //TEST 4: controllo se ci sono più di 30 oggetti nell'ordine. Se ciò si verifica mostro un messaggio d'errore        
+        /*TEST 4: controllo se ci sono più di 30 oggetti nell'ordine. Se ciò si verifica mostro un messaggio d'errore
+        (test con 31 elementi)*/      
         @Test
     	public void CheckItemsOrderedOver30_test() throws TakeAwayBillException{	
     		Calc testCalculator = new Calc();
@@ -95,7 +96,7 @@ public class CalcTest {
     		List<MenuItem> orders = new ArrayList<MenuItem>();
     		LocalTime t = LocalTime.of(16, 00);
 
-    		// aggiungo alla lista dei MenuItem
+    	
     		for(int i = 0; i < 4; i++) {
     			orders.add(new MenuItem(MenuItem.items.Gelato, "Fragola", 4.0));
     			orders.add(new MenuItem(MenuItem.items.Bevanda, "Fanta", 2.0));
@@ -104,8 +105,11 @@ public class CalcTest {
     			orders.add(new MenuItem(MenuItem.items.Gelato, "Menta", 2));
     			orders.add(new MenuItem(MenuItem.items.Bevanda, "Coca Cola", 2.0));
     			orders.add(new MenuItem(MenuItem.items.Budino, "Cioccolato", 3.5));
-    			orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
+    			
     		}
+    		orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
+    		orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
+    		orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
     		
     		try {
     			testCalculator.getOrderPrice(orders, u, t);
@@ -113,5 +117,27 @@ public class CalcTest {
     		catch(TakeAwayBillException e) {
     			assertEquals("Error: Non è possibile ordinare più di 30 elementi nello stesso ordine", e.getException());
     		}	
+    	}
+        //TEST 5: controllo se viene applicata una commissione di 50 centesimi sugli ordini inferiori a 10 euro 
+    	@Test
+    	public void Commission50centonordersbelow10euro_test(){
+    		Calc testCalculator = new Calc();
+    		User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(18, 30);
+
+    		
+
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Cremino", 1));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Fanta", 1));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Biancaneve", 1));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Pinguino", 2));		
+    		
+    		
+    		try {
+    			assertEquals(5.5, testCalculator.getOrderPrice(orders, u, t), 0.0);
+    		} catch(TakeAwayBillException e){
+    			e.getException();
+    		}
     	}
 }

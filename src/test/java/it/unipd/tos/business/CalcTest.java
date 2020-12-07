@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CalcTest {
 
-    //TEST 1: calcolo la somma totale
+    //TEST ISSUE 1: calcolo la somma totale
     @Test
     public void total_test() {
 
@@ -36,40 +36,71 @@ public class CalcTest {
            e.getException();
         }
    }
-    /*TEST 2: controlla se dal totale viene fatto lo sconto del 50% sul gelato meno caro 
+    /*TEST ISSUE 2: controlla se dal totale viene fatto lo sconto del 50% sul gelato meno caro 
       se sono stati ordinati almeno 5 gelati
      */
 	
 	@Test 
-	public void Discount50perc_for_less_expensive_icecream_among_5_test(){
+	public void Discount50perc_for_less_expensive_icecream_more_than_5_test(){
 		Calc testCalc = new Calc();
 		List<MenuItem> orders = new ArrayList<MenuItem>();
 		User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
 		LocalTime t = LocalTime.of(16, 00);
 		
 	
-			orders.add(new MenuItem(MenuItem.items.Gelato, "Cioccolato", 3.5));
-			orders.add(new MenuItem(MenuItem.items.Gelato, "Stracciatella", 2.5));
+			
+			orders.add(new MenuItem(MenuItem.items.Gelato, "Stracciatella", 2.0));
 			orders.add(new MenuItem(MenuItem.items.Gelato, "Menta", 3));
 			orders.add(new MenuItem(MenuItem.items.Budino, "Biancaneve", 4.5));
 			orders.add(new MenuItem(MenuItem.items.Gelato, "Fragola", 2.0));
 			orders.add(new MenuItem(MenuItem.items.Gelato, "Limone", 3.0));
 			orders.add(new MenuItem(MenuItem.items.Gelato, "Limone", 3.0));
+			orders.add(new MenuItem(MenuItem.items.Bevanda,"Coca cola", 2.0));
+			orders.add(new MenuItem(MenuItem.items.Gelato, "Menta", 3));
 		
 		
 		try {
-			assertEquals(20.5, testCalc.getOrderPrice(orders, u, t), 0.0);
+			assertEquals(21.5, testCalc.getOrderPrice(orders, u, t), 0.0);
 		}
 		catch(TakeAwayBillException e){
 			e.getException();
 		}
 	}
-	 // TEST 3: controllo se viene applicato uno sconto del 10% su un totale maggiore di 50€
+	//controllo il caso limite in cui ho cinque gelati pertanto non ho diritto allo sconto del 50% sul meno caro
+	@Test 
+	public void NoDiscount50perc_for_less_expensive_icecream_for_5_test(){
+		Calc testCalc = new Calc();
+		List<MenuItem> orders = new ArrayList<MenuItem>();
+		User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
+		LocalTime t = LocalTime.of(16, 00);
+		
+	
+			
+			orders.add(new MenuItem(MenuItem.items.Gelato, "Stracciatella", 2.0));
+			orders.add(new MenuItem(MenuItem.items.Gelato, "Menta", 3));
+			orders.add(new MenuItem(MenuItem.items.Budino, "Biancaneve", 4.5));
+			orders.add(new MenuItem(MenuItem.items.Gelato, "Fragola", 2.0));
+			orders.add(new MenuItem(MenuItem.items.Gelato, "Limone", 3.0));
+			orders.add(new MenuItem(MenuItem.items.Gelato, "Limone", 3.0));
+			orders.add(new MenuItem(MenuItem.items.Bevanda,"Coca cola", 2.0));
+			
+		
+		
+		try {
+			assertEquals(19.5, testCalc.getOrderPrice(orders, u, t), 0.0);
+		}
+		catch(TakeAwayBillException e){
+			e.getException();
+		}
+	}
+	 /* TEST ISSUE 3: controllo se viene applicato uno sconto del 10% su un totale(gelati e budini) maggiore di 50€ (lo sconto non è chiaro dal testo
+	    pertanto qui si applica prezzo totale,bibite incluse)
+	  */
 	 
         @Test
 		public void Discount10perc_for_Major50Euro_test(){
         	
-			Calc testCalculator = new Calc();
+			Calc testCalc = new Calc();
 			List<MenuItem> orders = new ArrayList<MenuItem>();
 			User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
 			LocalTime t = LocalTime.of(16, 00);
@@ -81,30 +112,53 @@ public class CalcTest {
 			    orders.add(new MenuItem(MenuItem.items.Budino, "Cioccolato", 20));
 			
 			try {
-				assertEquals(67.5, testCalculator.getOrderPrice(orders, u, t), 0.0);
+				assertEquals(67.5, testCalc.getOrderPrice(orders, u, t), 0.0);
 			} 
 			catch(TakeAwayBillException e) {
 				e.getException();
 			}
 		}
-        /*TEST 4: controllo se ci sono più di 30 oggetti nell'ordine. Se ciò si verifica mostro un messaggio d'errore
-        (test con 31 elementi)*/      
+        //controllo il caso limite ovvero quando il costo totale di gelati e budini risulta essere esattamente 50€ quindi non ho diritto allo sconto
+        @Test
+  		public void NoDiscount10perc_for_50Euro_test(){
+          	
+  			Calc testCalc = new Calc();
+  			List<MenuItem> orders = new ArrayList<MenuItem>();
+  			User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
+  			LocalTime t = LocalTime.of(16, 00);
+  			
+  				orders.add(new MenuItem(MenuItem.items.Gelato, "Vaniglia", 5));
+  				orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 10));
+  				orders.add(new MenuItem(MenuItem.items.Budino, "Pinguino", 10));
+  				orders.add(new MenuItem(MenuItem.items.Budino, "Biancaneve", 15));		
+  			    orders.add(new MenuItem(MenuItem.items.Budino, "Cioccolato", 20));
+  			
+  			try {
+  				assertEquals(60, testCalc.getOrderPrice(orders, u, t), 0.0);
+  			} 
+  			catch(TakeAwayBillException e) {
+  				e.getException();
+  			}
+  		}
+        /*TEST ISSUE 4: controllo se ci sono più di 30 oggetti nell'ordine. Se ciò si verifica mostro un messaggio d'errore
+        (test con 31 elementi)
+        */      
         @Test
     	public void CheckItemsOrderedOver30_test() throws TakeAwayBillException{	
-    		Calc testCalculator = new Calc();
+    		Calc testCalc = new Calc();
     		User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
     		List<MenuItem> orders = new ArrayList<MenuItem>();
     		LocalTime t = LocalTime.of(16, 00);
 
     	
     		for(int i = 0; i < 4; i++) {
-    			orders.add(new MenuItem(MenuItem.items.Gelato, "Fragola", 4.0));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "The alla pesca", 4.0));
     			orders.add(new MenuItem(MenuItem.items.Bevanda, "Fanta", 2.0));
-    			orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
-    			orders.add(new MenuItem(MenuItem.items.Budino, "Pinguino", 4.5));		
-    			orders.add(new MenuItem(MenuItem.items.Gelato, "Menta", 2));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "The al limone", 3.5));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 4.5));		
+    			orders.add(new MenuItem(MenuItem.items.Gelato,  "Menta", 2));
     			orders.add(new MenuItem(MenuItem.items.Bevanda, "Coca Cola", 2.0));
-    			orders.add(new MenuItem(MenuItem.items.Budino, "Cioccolato", 3.5));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Chinotto", 3.5));
     			
     		}
     		orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
@@ -112,16 +166,40 @@ public class CalcTest {
     		orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
     		
     		try {
-    			testCalculator.getOrderPrice(orders, u, t);
+    			assertEquals(80.5, testCalc.getOrderPrice(orders, u, t), 0.0);
     		}
     		catch(TakeAwayBillException e) {
     			assertEquals("Error: Non è possibile ordinare più di 30 elementi nello stesso ordine", e.getException());
     		}	
     	}
-        //TEST 5: controllo se viene applicata una commissione di 50 centesimi sugli ordini inferiori a 10 euro 
+        //controllo il caso limite in cui ordino esattamente 30 elementi
+        @Test
+    	public void CheckItemsOrderedExactly30_test() throws TakeAwayBillException{	
+    		Calc testCalc = new Calc();
+    		User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(16, 00);
+
+    	
+    		for(int i = 0; i < 5; i++) {
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Sprite", 4.0));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Fanta", 2.0));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Pinguino", 4.5));		
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Menta", 2));
+    		}
+	
+    		try {
+    			assertEquals(80, testCalc.getOrderPrice(orders, u, t), 0.0);
+    		}
+    		catch(TakeAwayBillException e) {
+    			assertEquals("Error: Non è possibile ordinare più di 30 elementi nello stesso ordine", e.getException());
+    		}	
+    	}
+        //TEST ISSUE 5: controllo se viene applicata una commissione di 50 centesimi sugli ordini inferiori a 10 euro 
     	@Test
     	public void Commission50centonordersbelow10euro_test(){
-    		Calc testCalculator = new Calc();
+    		Calc testCalc = new Calc();
     		User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
     		List<MenuItem> orders = new ArrayList<MenuItem>();
     		LocalTime t = LocalTime.of(18, 30);
@@ -135,7 +213,29 @@ public class CalcTest {
     		
     		
     		try {
-    			assertEquals(5.5, testCalculator.getOrderPrice(orders, u, t), 0.0);
+    			assertEquals(5.5, testCalc.getOrderPrice(orders, u, t), 0.0);
+    		} catch(TakeAwayBillException e){
+    			e.getException();
+    		}
+    	}
+    	//controllo il caso limite con un ordine il cui costo è esattamente 10 euro (non deve pagare alcuna commissione)
+    	@Test
+    	public void NoCommission50centonordersExactly10eur_test(){
+    		Calc testCalc = new Calc();
+    		User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(18, 30);
+
+    		
+         
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Cremino", 1));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Fanta", 1));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Biancaneve", 1));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Pinguino", 3.5));		
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Pinguino", 3.5));	
+    		
+    		try {
+    			assertEquals(10, testCalc.getOrderPrice(orders, u, t), 0.0);
     		} catch(TakeAwayBillException e){
     			e.getException();
     		}
@@ -256,4 +356,3 @@ public class CalcTest {
     		}
     	}
 }
-

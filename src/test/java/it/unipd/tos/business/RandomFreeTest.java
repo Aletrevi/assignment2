@@ -11,6 +11,7 @@ import it.unipd.tos.model.User;
 public class RandomFreeTest {
 
 //controllo che la funzione checktime ritorni true a un orario accettabile (controllo i valori accettabili più esterni)
+	//Estremo superiore
 	@Test
 	public void checktimepositivetop_test() {
 		
@@ -19,7 +20,7 @@ public class RandomFreeTest {
 		
 		assertTrue(rnd.checktime(intime));
 	}
-	
+	//EStremo inferiore
 	@Test
 	public void checktimepositivelow_test() {
 		
@@ -29,6 +30,7 @@ public class RandomFreeTest {
 		assertTrue(rnd.checktime(intime));
 	}
 //controllo che la funzione checktime escluda i valori non accettabili (gli estremi si considerano non accettati)
+	//primo valore più alto non accettato
 	@Test 
 	public void checktimeover_test() {
 	
@@ -38,6 +40,7 @@ public class RandomFreeTest {
 		assertFalse(rnd.checktime(time));
 		
 	}
+	//primo valore più basso non accettato
 	@Test
 	public void checktimebefore_test() {
 		
@@ -96,7 +99,7 @@ public class RandomFreeTest {
 		assertFalse(rnd.is_eligible(u, intime));
 		
 	}
-	//test funzionamento checkgift in base a chosen (valore randomico), caso utente selezionato randomicamente
+	//test funzionamento checkgift in base a chosen (valore randomico), caso utente selezionato randomicamente (l'utente deve essere eleggibile) ritorna true
 	@Test 
 	public void checkgiftchosentrue_test() {
 		User u = new User("AleTrevi","Trevisan", "Alessio", 17); 
@@ -107,7 +110,7 @@ public class RandomFreeTest {
 		
 		assertTrue(result);
 	}
-	//test funzionamento checkgift in base a chosen (valore randomico), caso utente non selezionato randomicamente
+	//test funzionamento checkgift in base a chosen (valore randomico), caso utente non selezionato randomicamente (l'utente rispetta i requisiti per lo sconto)
 	@Test 
 	public void checkgiftchosenfalse_test() {
 		User u = new User("AleTrevi","Trevisan", "Alessio", 17); 
@@ -118,18 +121,7 @@ public class RandomFreeTest {
 		
 		assertFalse(result);
 	}
-	//test funzionamento checkgift in base a is_eligible (rispetta le condizioni per lo sconto e viene selezionato randomicamente) deve ritornare true
-	@Test 
-	public void checkgiftiseligibletrue_test() {
-		User u = new User("AleTrevi","Trevisan", "Alessio", 17); 
-		LocalTime t = LocalTime.of(18, 30);
-		RandomFree rnd = new RandomFree();
-		rnd.setROptionalValue(true);
-		boolean result = rnd.checkGift(u, t);
-		
-		assertTrue(result);
-	}
-	//test funzionmamento checkgift in base a is_eligible (non rispetta le condizioni per lo sconto e viene selezionato randomicamente) deve ritornare false
+	//test funzionmamento checkgift in base a is_eligible (non rispetta le condizioni per lo sconto ma viene selezionato randomicamente) deve ritornare false
 	@Test 
 	public void checkgiftiseligiblefalse_test() {
 		User u = new User("AleTrevi","Trevisan", "Alessio", 18); 

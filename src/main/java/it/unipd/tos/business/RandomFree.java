@@ -59,8 +59,4 @@ public class RandomFree {
     public void setROptionalValue(Boolean v) {
         r = Optional.of(v);
     }
-    
-    
- 
-    
 }

@@ -64,7 +64,7 @@ public class CalcTest {
 			e.getException();
 		}
 	}
-	 // Test 3: controllo se viene applicato uno sconto del 10% su un totale maggiore di 50€
+	 // TEST 3: controllo se viene applicato uno sconto del 10% su un totale maggiore di 50€
 	 
         @Test
 		public void Discount10perc_for_Major50Euro_test(){
@@ -87,4 +87,31 @@ public class CalcTest {
 				e.getException();
 			}
 		}
+        //TEST 4: controllo se ci sono più di 30 oggetti nell'ordine. Se ciò si verifica mostro un messaggio d'errore        
+        @Test
+    	public void CheckItemsOrderedOver30_test() throws TakeAwayBillException{	
+    		Calc testCalculator = new Calc();
+    		User u = new User("AleTrevi", "Alessio", "Trevisan", 21);
+    		List<MenuItem> orders = new ArrayList<MenuItem>();
+    		LocalTime t = LocalTime.of(16, 00);
+
+    		// aggiungo alla lista dei MenuItem
+    		for(int i = 0; i < 4; i++) {
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Fragola", 4.0));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Fanta", 2.0));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Pinguino", 4.5));		
+    			orders.add(new MenuItem(MenuItem.items.Gelato, "Menta", 2));
+    			orders.add(new MenuItem(MenuItem.items.Bevanda, "Coca Cola", 2.0));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Cioccolato", 3.5));
+    			orders.add(new MenuItem(MenuItem.items.Budino, "Vaniglia", 3.5));
+    		}
+    		
+    		try {
+    			testCalculator.getOrderPrice(orders, u, t);
+    		}
+    		catch(TakeAwayBillException e) {
+    			assertEquals("Error: Non è possibile ordinare più di 30 elementi nello stesso ordine", e.getException());
+    		}	
+    	}
 }
